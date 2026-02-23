@@ -1,2 +1,4 @@
 # COMP483_PipelineProject
-This repo runs is a snakemake file that runs kallisto, sleuth, bowtie2, SPAdes, and BLAST on 2 sets of HCMV transcriptomes to compare between 2 days post infection and 6 days post infection. The results are written to a file called PipelineReport.txt. 
+This repo contains a snakemake file that runs kallisto, sleuth, bowtie2, SPAdes, and BLAST on 2 donor sets of HCMV transcriptomes to compare between 2- and 6-days-post-infection. Using a combination of shell commands, python scripts, and R scripts, the final results are written to a file called PipelineReport.txt. I have included a file called Hicks_PipelineReport.txt that shows my results when I run the snakemake file on the whole dataset.
+
+In order to run this repo quickly, I have provided a sample dataset. This takes a small subset (4000 input reads) from the SRRs SRR5660030 (donor 1, 2dpi), SRR5660033 (donor 1, 6dpi), SRR5660044 (donor 2, 2dpi), and SRR5660045 (donor 2, 6dpi). To create this dataset, I first used the command fasterq-dump with each SRR to convert the files to FASTQ format. Then, I used the command head -4000 to write the sample subset to a new file. 
