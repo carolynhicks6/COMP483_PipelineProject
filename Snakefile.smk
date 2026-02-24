@@ -56,7 +56,7 @@ rule make_index:
     output:
         index= "data/kallisto/index.txt"
     script:
-        "extract_cds.py"
+        "scripts/extract_cds.py"
 
 # the purpose of this rule is to make the kallisto index
 # this allows kallisto to map reads to transcripts
@@ -95,7 +95,7 @@ rule run_sleuth:
     output:
         "results/sleuth/results.tsv"
     script:
-        "sleuth.R"
+        "scripts/sleuth.R"
 
 # in order to run bowtie2, there needs to be an index of the reference genome
 # this rule builds the index of 6 files
@@ -164,7 +164,7 @@ rule bowtie2_results:
     output:
         results="results/bowtie2_results.txt"
     script:
-        "bowtie2_results.py"
+        "scripts/bowtie2_results.py"
 
 # the next step is to run spades using bowtie2 output files
 # this rule produces contigs and scaffolds fasta files in corresponding directory for each SRR
@@ -192,7 +192,7 @@ rule spades_longest_contig:
     output:
         longest_contig="data/spades/{sample}_longest_contig"
     script:
-        "longest_contig.py"
+        "scripts/longest_contig.py"
 
 # this rule uses shell commands to make a local ncbi database
 # only include refseq genomes
@@ -234,7 +234,7 @@ rule write_blast_results:
     output:
         result="results/blast/blast_results.tsv"
     script:
-        "blast_results.py"
+        "scripts/blast_results.py"
 
 # this snakemake file wrote results for each of the tools used to separate files
 # in order to tie everything together, this final rule takes the result files and appends them to the pipeline report
