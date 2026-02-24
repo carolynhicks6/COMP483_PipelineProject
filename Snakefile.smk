@@ -10,11 +10,11 @@ rule all:
         expand("ref/{accession}_genomic.fna", accession=accession), 
         expand("ref/{accession}_cds.fna", accession=accession),
         expand("data/kallisto/{sample}/abundance.tsv", sample=samples),
-        "results/sleuth/results.tsv",
+        "results/sleuth/sleuth_results.tsv",
         expand("data/bowtie2/sam_files/{sample}.sam", sample=samples),
         expand("data/bowtie2/extracted_fastq/{sample}_R1.fastq",sample=samples),
         expand("data/bowtie2/extracted_fastq/{sample}_R2.fastq", sample=samples),
-        "results/bowtie2_results.txt",
+        "results/bowtie2/bowtie2_results.txt",
         expand("data/spades/{sample}/contigs.fasta", sample=samples),
         expand("data/spades/{sample}/scaffolds.fasta", sample=samples),
         expand("data/spades/{sample}_longest_contig", sample=samples),
@@ -93,7 +93,7 @@ rule run_sleuth:
     input:
         abundance = expand("data/kallisto/{sample}/abundance.tsv", sample=samples)
     output:
-        "results/sleuth/results.tsv"
+        "results/sleuth/sleuth_results.tsv"
     script:
         "scripts/sleuth.R"
 
@@ -162,7 +162,7 @@ rule bowtie2_results:
         initial=expand("paired_fastq/{sample}_1.fastq", sample=samples),
         filtered=expand("data/bowtie2/extracted_fastq/{sample}_R1.fastq", sample=samples)
     output:
-        results="results/bowtie2_results.txt"
+        results="results/bowtie2/bowtie2_results.txt"
     script:
         "scripts/bowtie2_results.py"
 
@@ -241,8 +241,8 @@ rule write_blast_results:
 rule write_pipeline_report:
     input:
         cds="data/kallisto/index.txt",
-        sleuth="results/sleuth/results.tsv",
-        bowtie2="results/bowtie2_results.txt",
+        sleuth="results/sleuth/sleuth_results.tsv",
+        bowtie2="results/bowtie2/bowtie2_results.txt",
         blast="results/blast/blast_results.tsv"
     output:
         report="results/PipelineReport.txt"
@@ -250,11 +250,9 @@ rule write_pipeline_report:
         """
         echo "The HCMV genome ({accession}) has $(grep -c '^>' {input.cds}) CDS." >> {output.report}
         echo "" >> {output.report}
-        cut -f 1-4 {input.sleuth} >> {output.report}
+        paste <(cut -f1 {input.sleuth}) <(cut -f4 {input.sleuth}) <(cut -f2 {input.sleuth}) <(cut -f3 {input.sleuth})  >> {output.report}
         echo "" >> {output.report}
         cat {input.bowtie2} >> {output.report}
         echo "" >> {output.report}
         cat {input.blast} >> {output.report}
         """
-
-
